@@ -20,7 +20,6 @@ from forum.models import Badge, Award, User, Page
 from forum.http_responses import HttpResponseNotFound, HttpResponseIntServerError
 from forum.utils.mail import send_template_email
 from forum.templatetags.extra_filters import or_preview
-from forum_modules.default_badges.badges import badge_order, get_badge_data
 
 import decorators
 import logging, traceback
@@ -89,6 +88,7 @@ def logout(request):
 
 @decorators.render('badges.html', 'badges', _('badges'), weight=300)
 def badges(request):
+    from forum_modules.default_badges.badges import badge_order, get_badge_data
     from forum.badges.base import BadgesMeta
     badges = sorted([get_badge_data(Badge.objects.get(id=id)) for id in BadgesMeta.by_id.keys()], badge_order)
     

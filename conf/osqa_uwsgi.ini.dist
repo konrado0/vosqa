@@ -3,7 +3,7 @@
 
 # Django-related settings
 # the base directory (full path)
-chdir           = <FULL_PATH_TO_PROJECT>/dressbook
+chdir           = <FULL_PATH_TO_PROJECT>
 # Django's wsgi file
 module          = osqa.conf.wsgi:application
 # the virtualenv (full path)
@@ -26,4 +26,4 @@ chmod-socket    = 660
 # clear environment on exit
 vacuum          = true
 harakiri	= 20
-#daemonize	= <FULL_PATH_TO_PROJECT>/dressbook/osqa/log/uwsgi_osqa.log
+#daemonize	= <FULL_PATH_TO_PROJECT>/vosqa/log/uwsgi_osqa.log

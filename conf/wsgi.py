@@ -1,5 +1,5 @@
 """
-WSGI config for OSQA project.
+WSGI config for VOSQA project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -15,7 +15,7 @@ parent_dir = current_dir[:osqa_dir.rfind('/')]
 
 sys.path.append(parent_dir)
 sys.path.append(osqa_dir)
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "osqa.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vosqa.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
