@@ -1,0 +1,9 @@
+{% load question_list_tags %}
+
+{% for question in questions.paginator.page %}
+    {% if show_summary %}
+      {% question_list_item question question_summary=yes %}
+    {% else %}
+      {% question_list_item question %}
+    {% endif %}
+{% endfor %}

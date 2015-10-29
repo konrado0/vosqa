@@ -1,0 +1,15 @@
+{% load extra_tags ui_registry i18n %}
+
+
+<div id="footer">
+    <div class="footerLinks" >
+        {% loadregistry footer_links %}<span class="link-separator">&bull;</span>{% endloadregistry %}
+    </div>   
+ <div id="licenseLogo">
+  © 2015 Powered by VOSQA - User contributions licensed under: 
+  <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"> cc by-sa 3.0
+  {% comment %}  <img src="{% media  "/media/images/by-sa-88x31-min.png" %}" title="Creative Commons: Attribution - Share Alike" alt="cc-by-sa" width="88" height="31" />{% endcomment %}
+  </a>
+ </div>
+</div>
+

@@ -1,0 +1,9 @@
+# contents of /etc/supervisor/conf.d/uwsgi.conf
+[program:uwsgi]
+command = /home/<USER>/virtualenv/osqa/bin/uwsgi --ini osqa_uwsgi.ini
+directory = <FULL_PATH_TO_PROJECT>/dressbook/osqa/conf
+user = <USER>
+autostart = true
+autorestart = true
+stdout_logfile = <FULL_PATH_TO_PROJECT>/dressbook/osqa/log/suprv_uwsgi_osqa.log
+stderr_logfile = <FULL_PATH_TO_PROJECT>/dressbook/osqa/log/suprv_uwsgi_osqa_err.log

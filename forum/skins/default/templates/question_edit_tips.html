@@ -1,0 +1,31 @@
+<!-- question_edit_tips.html -->
+{% load i18n general_sidebar_tags extra_filters %}
+<div class="boxC" id="title_side_bar">
+    <p class="subtitle darkred">{% trans "Title Tips" %}</p>
+    <div class="list-item">
+        <ul>
+		<li>ask a question relevant to the {{ settings.APP_TITLE }} community</li>
+ 		<li>the title must be in the form of a question</li>
+ 		<li>provide enough details</li>
+ 		<li>be clear and concise</li>
+ 		</ul>
+
+        <p class='info-box-follow-up-links'>
+            <a href="{% url "faq" %}" target="_blank" title="{% trans "see frequently asked questions" %}">{% trans "faq" %} &raquo;</a>
+        </p>
+    </div>
+</div>
+
+<div class="boxC" id="tags_side_bar" align="left">
+    <p class="subtitle darkred">{% trans "What Are Tags" %}</p>
+    <div class="list-item">
+        <ul>
+		<li>Tags are words that will tell others what this question is about.</li>
+		<li>They will help other find your question.</li>
+		<li>A question can have up to {{ settings.FORM_MAX_NUMBER_OF_TAGS }} tags, but it must have at least {{ settings.FORM_MIN_NUMBER_OF_TAGS }}.</li>
+		</ul>
+    </div>
+</div>
+
+
+<!-- end question_edit_tips.html  -->

@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load extra_tags %}
+
+<div class="boxC">
+    <h3>{% trans "Recent awards" %}</h3>
+    <div class="body">
+         <ul class="badge-list">
+         {% for award in awards %}
+            <li style="margin-bottom:7px;">
+            {% show_badge award.badge %}
+            <a href="{{ award.user.get_profile_url }}" class="medal" style="color: #1796E6; padding-left:0;">{{ award.user.decorated_name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+        <div class="more"><a href="{% url "badges" %}">{% trans "all awards" %} </a> </div>
+     </div>
+</div>

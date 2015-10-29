@@ -1,0 +1,31 @@
+## generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.db
+
+## Django files
+*.log
+*.pot
+*.pyc
+local_settings.py
+osqa/settings_local.py
+
+#Media stores
+osqa/forum/upfiles/upfiles
+osqa/forum/upfiles/avatar
+osqa/forum/upfiles/cache
+warez/gallery/gallery/media/photos/
+
+## Eclipse project setting
+.settings/
+
+## make sure we do not commit cache and generated documentation
+cache/
+/osqa/doc/
+
+## merge files
+*.orig
+

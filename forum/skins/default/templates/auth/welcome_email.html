@@ -1,0 +1,58 @@
+{% load i18n extra_tags email_tags %}
+
+{% declare %}
+    prefix = settings.EMAIL_SUBJECT_PREFIX
+    app_name = settings.APP_SHORT_NAME
+
+    exclude_greeting = True
+    exclude_finetune = True
+{% enddeclare %}
+
+{% email %}
+    {% subject %}{% blocktrans %}{{ prefix }} Welcome to {{ app_name }}{% endblocktrans %}{% endsubject %}
+
+    {% htmlcontent notifications/base.html %}
+        <p style="{{ p_style }}">
+            {% blocktrans %}Welcome to {{ app_name }} community{% endblocktrans %}!
+        </p>
+	{% if validation_code %}
+        <p style="{{ p_style }}">{% trans "The following link will help us verify your email address:" %}</p>
+
+        <p style="{{ p_style }}"><a  style="{{ a_style }}" href="{% fullurl "auth_validate_email" user=recipient.id code=validation_code %}">{% trans "Validate my email address" %}</a></p>
+
+        <p style="{{ p_style }}">{% trans "If the above link is not clickable, copy and paste this url into your web browser's address bar:" %}</p>
+
+        <p style="{{ p_style }}">{% fullurl "auth_validate_email" user=recipient.id code=validation_code %}</p>
+    {% endif %}
+    <p style="{{ p_style }}">
+    {% blocktrans %}{{ app_name }} only works because users like you generously share their knowledge helping each other.
+    Make sure to check out our{% endblocktrans %}
+    <a href="{% url "about" %}" class="special">{% blocktrans %}quick introduction{% endblocktrans %}</a>
+    {% blocktrans %}and start contributing:{% endblocktrans %}
+    </p>
+	<ul style="{{ p_style }}>
+	<li><a href="{% url "index" %}" class="special">{% blocktrans %}Find interesting questions you can answer{% endblocktrans %}</a></li>
+	<li><a href="{% url "ask" %}" class="special">{% blocktrans %}Ask a question{% endblocktrans %}</a></li>
+	</ul>
+
+	<p style="{{ p_style }}">{% blocktrans %}Other users will vote up your answer if they find it helpful.
+	For every upvote, you earn reputation, which unlocks additional privileges on the site.{% endblocktrans %}</p>
+    {% endhtmlcontent %}
+
+{% textcontent notifications/base_text.html %}
+{% blocktrans %}Welcome to {{ app_name }}!{% endblocktrans %},
+
+{% if validation_code %}
+{% trans "Copy and paste this url into your web browser's address bar to help us verify your email address:" %}
+
+{% fullurl "auth_validate_email" user=recipient.id code=validation_code %}
+{% endif %}
+
+{% blocktrans %}{{ app_name }} only works because users like you generously share their knowledge helping each other.
+    Make sure to check out our quick introduction:{% endblocktrans %}
+    {% url "about" %}
+    {% blocktrans %}and start contributing!{% endblocktrans %}
+{% endtextcontent %}
+
+{% endemail %}
+

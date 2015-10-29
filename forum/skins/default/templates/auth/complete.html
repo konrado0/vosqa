@@ -1,0 +1,148 @@
+{% extends "base_content.html" %}
+<!-- complete.html -->
+{% load i18n extra_tags %}
+{% block head %}{% endblock %}
+{% block title %}{% spaceless %}{% trans "Create your account" %}{% endspaceless %}{% endblock %}
+
+{% block forejs %}
+<script type='text/javascript' src='//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js'></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    	$(".jspot").remove();
+    	$("#fregister").validate({ rules: {    		
+    		{{ form1.username.html_name }}: { required: true, minlength: {{ settings.MIN_USERNAME_LENGTH }}}, 
+    		{{ form1.email.html_name }}: { required: true, email: true},
+    		'age': { required: false, },
+    		{% if form1.real_name %}{{ form1.real_name.html_name }}: { required: false, },{% endif %}
+    		{% if form1.password1 %}
+    		{{ form1.password1.html_name }}: { required: true, minlength: {{ settings.MIN_PASSWORD_LENGTH }}},
+    		{{ form1.password2.html_name }}: { equalTo: "#id_{{ form1.password1.html_name }}", }    		
+    		{% endif %}
+    		},   invalidHandler: function(event, validator) {
+			    // 'this' refers to the form
+			    var errors = validator.numberOfInvalids();
+			    if (errors) {
+			      var message = errors == 1
+			        ? 'You missed 1 field. It has been highlighted'
+			        : 'You missed ' + errors + ' fields. They have been highlighted';
+			      $("div.error span").html(message);
+			      $("div.error").show();
+			    } else {
+			      $("div.error").hide();
+			    }
+  			} });		
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="authBox">
+    <h1>{% trans "Finish creating Your account" %}</h1>
+	<div id="completetxt" >
+        <p><b>{% trans "Please choose your screen name and confirm your email address." %}</b><br />
+        <span class="grey">{% trans "A valid email address is necessary to actively participate in our community." %}</span></p>
+    	<p style="display:none">{% trans "This account already exists, please use another." %}</p>
+	</div>
+
+	{% if form1.errors %}
+        <ul class="errorlist">
+        {% if form1.non_field_errors %}
+            {% for error in form1.non_field_errors %}
+                <li>{{error}}</li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+	{% endif %}
+
+	<div class="login">
+        <div class="error"><span></span></div>
+        <form id="fregister" name="fregister" action="" method="POST">
+            {% csrf_token %}
+            {{ form1.next }}
+            <div class="form-row-vertical margin-bottom">
+                <label for="id_username">{% trans "Username:" %}</label>
+                {% if form1.username.errors %} 
+                    <p class="error">{{ form1.username.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.username }}
+            </div>
+            <div class="form-row-vertical margin-bottom jspot">
+                <label for="id_birthday">Simple test, skip this:</label>                
+                <input class="required login" id="id_birthday" maxlength="50" name="birthday" type="text">
+            </div>
+            <div class="form-row-vertical margin-bottom csspot">
+                <label for="id_age">Age:</label>                
+                <input class="required login" id="id_age" maxlength="30" name="age" type="text">
+            </div>
+            <div class="form-row-vertical margin-bottom">
+                <label for="id_email">{% trans "Your email address:" %}</label>
+                {% if form1.email.errors %} 
+                    <p class="error">{{ form1.email.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.email }}
+            </div>
+            <div class="form-row-vertical margin-bottom jspot">
+                <label for="id_url">Dont enter anything:</label>                
+                <input class="required login" id="id_website" maxlength="50" name="website" type="text">
+            </div>
+            {% if form1.real_name %}
+            <div class="form-row-vertical margin-bottom" style="display: none;">
+                <label for="id_real_name">{{ form1.real_name.label }}</label>
+                {% if form1.real_name.errors %}
+                    <p class="error">{{ form1.real_name.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.real_name }}
+            </div>
+            {% endif %}
+            {% if form1.password1 %}
+                <div class="form-row-vertical margin-bottom">
+                    <label for="password1_id">{% trans "Password (at least "%}{{ settings.MIN_PASSWORD_LENGTH }}{% trans " characters long):" %}</label>
+                    {% if form1.password1.errors %}
+                        <p class="error">{{ form1.password1.errors|join:", " }}</p>
+                    {% endif %}
+                    {{ form1.password1 }}
+                </div>
+                <div class="form-row-vertical margin-bottom">
+                    <label for="password2_id">{% trans "Retype password:" %}</label>
+                    {% if form1.password2.errors %} 
+                        <p class="error">{{ form1.password2.errors|join:", " }}</p>
+                    {% endif %}
+                    {{ form1.password2 }}
+                </div>
+            {% endif %}
+            {% if form1.recaptcha %}
+                <div class="form-row-vertical margin-bottom">
+                <label for="recaptcha_id">{% trans "Are you a human?" %}</label>
+                {% if form1.recaptcha.errors %} 
+                    <p class="error">{{ form1.recaptcha.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.recaptcha }}
+                </div>
+            {% endif %}
+            <div class="submit-row"><input type="submit" class="submit" name="bnewaccount" id="bnewaccount" value="{% trans "Create account" %}"/></div>
+		</form>
+	</div>
+    {% comment %}<!-- this form associates openID with an existing password-protected account, not yet functional -->
+    {% if form2 %}
+	<div class="login" style="display:none">
+        <form name="fverify" action="{% url "user_register" %}" method="POST">
+            {% csrf_token %}
+            {{ form2.next }}
+			<fieldset style="padding:10px">
+				<legend class="big">{% trans "Existing account" %}</legend>
+				<div class="form-row"><label for="id_username">{% trans "user name" %}</label><br/>{{ form2.username }}</div>
+				<div class="form-row"><label for="id_passwordl">{% trans "password" %}</label><br/>{{ form2.password }}</div>
+                <p><span class='big strong'>(Optional) receive updates by email</span> - only sent when there are any.</p>
+				<!--todo double check translation from chinese 确认 = "Register" -->
+				<div class="submit-row">
+					<input type="submit" class="submit" name="bverify" value="{% trans "Register" %}"/> 
+					<a href="{% url "user_sendpw" %}">{% trans "Forgot your password?" %}</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+    {% endif %}
+    {% endcomment %}
+</div>
+{% endblock %}
+<!-- end complete.html -->

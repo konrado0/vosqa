@@ -1,0 +1,3 @@
+osqa_nginx.conf
+uwsgi.conf
+osqa_uwsgi.ini

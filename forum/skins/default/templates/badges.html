@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+<!-- template badges.html -->
+{% load extra_tags %}
+{% load humanize %}
+{% load i18n %}
+{% block title %}{% spaceless %}{% trans "Badges summary" %}{% endspaceless %}{% endblock %}
+{% block content %}
+<div class="headlineA">
+        <span class="headMedals">{% trans "Badges" %}</span>
+</div>
+<div class="badges" id="main-body" style="width:100%">
+    <p>
+	{% trans "Community gives you awards for your questions, answers and votes." %}
+	{% blocktrans %}Below is the list of available badges and number of times each type of badge has been awarded.
+    {% endblocktrans %}
+    </p>
+    <div id="medalList">
+        {% for badge in badges %}
+        <div style="clear:both;">
+        {% if badge.section %}<h2 style="padding: 10px 0;">{{ badge.section }}</h2>{% endif %}
+            <div class="intoMyBadges">
+            {% if badge.id in mybadges %}<span>&#10004;</span>{% endif %}
+            </div>
+            <div class="badgeListItem">{% show_badge badge badge.awarded_count %}</div>
+            <p class="badgeListDescription">{{ badge.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block sidebar %}
+<div class="boxC">
+    <h3>{% trans "Community badges" %}</h3>
+    <div class="icon badge1"><div class="shine">
+    <span title="{% trans "Gold badge: the highest honor and is very rare" %}" class="medal">{% trans "Gold Badge" %}</span>
+    </div></div>
+    <div style="clear: both; margin-bottom:7px;"></div>
+	<p>{% trans "Recognizes important contributions of the members of the community. Very rare." %}</p>
+	
+	<div class="icon badge2" style="margin-top:8px;"><div class="shine">
+    <span title="{% trans "Silver badge: occasionally awarded for the high quality contributions" %}" class="medal">{% trans "Silver Badge" %}</span>
+    </div></div>
+    <div style="clear: both; margin-bottom:7px;"></div>
+	<p>{% trans "Occasionally awarded for the high quality contributions." %}</p>
+    
+    <div class="icon badge3" style="margin-top:8px;"><div class="shine">
+    <span title="{% trans "Bronze badges encourage users to try out diffrent features" %}" class="medal">{% trans "Bronze Badge" %}</span>
+    </div></div>
+    <div style="clear: both; margin-bottom:7px;"></div>
+	<p>{% trans "Encourages users to try out diffrent features. They are easy to get if you try!." %}</p>    
+</div>
+{% endblock %}
+<!-- end template badges.html -->

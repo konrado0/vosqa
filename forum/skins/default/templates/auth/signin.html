@@ -1,0 +1,73 @@
+{% extends "base_content.html" %}
+
+{% load i18n %}
+{% load extra_tags %}
+
+{% block title %}{% spaceless %}{% trans "Sign in" %}{% endspaceless %}{% endblock %}
+
+{% block forejs %}    
+    {% for provider in all_providers %}
+        {% for location in provider.extra_css %}
+            <link rel="stylesheet" type="text/css" media="screen" href="{{ location }}"/>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+<div class="authBox">
+    {% for provider in all_providers %}
+        {% if provider.pre_code %}
+            {{ provider.pre_code|safe }}
+        {% endif %}
+    {% endfor %}
+    <h1>{% trans "Sign in to" %} {{settings.APP_TITLE}}</h1>    
+    {% if msg %}
+        <p class="error">{{ msg }}</p>
+    {% endif %}
+    
+    <p class="grey">With a social network</p>
+    {% for provider in bigicon_providers %}
+    {{ provider.render_button }}
+    {% endfor %}
+    
+    <div style="clear: both; margin-bottom: 5px;"></div>
+    {% for provider in stackitem_providers %}
+        <h2 class="or_label">{% trans 'Or...' %}</h2>
+        <form class="signin_form" method="POST" action="{% url "auth_provider_signin" provider=provider.id %}" accept-charset="utf-8">
+            {% csrf_token %}
+            {% include provider.stack_item_template %}
+            <input type="hidden" class="validate_email" name="validate_email" value="yes" />
+        </form>
+    {% endfor %}
+    
+    <script type="text/html" id="simple_form_template">
+        <fieldset id="slot_form">
+              <p id="provider_name_slot">{% trans 'Enter your ' %}%%YOUR_WHAT%%</p>
+              <div><p><span></span>
+                    <input id="input_field" type="text" name="input_field" /><span></span>
+                    <input id="ssignin" name="ssignin" type="submit" value="Login" />
+              </p></div>
+              <input type="hidden" class="validate_email" name="validate_email" value="yes" />
+          </fieldset>
+    </script>
+</div>
+
+<!-- Google Code for User wants to join Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 942392742;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "n_BMCIuTv18QpouvwQM";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/942392742/?label=n_BMCIuTv18QpouvwQM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+{% endblock %}

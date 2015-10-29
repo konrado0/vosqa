@@ -1,0 +1,58 @@
+{% spaceless %}
+{% load i18n humanize extra_tags %}
+{% declare %}
+    answer_count = questions.children_count('answer') if questions.exists() else 0
+{% enddeclare %}
+
+<div class="boxC">
+	<div class="headQuestions">
+    {% if searchtag %}
+        {% trans "Found by tags" %}
+    {% else %}
+        {% if searchtitle %}
+            {% if settings.USE_SPHINX_SEARCH %}
+                {% trans "Search results" %}
+            {% else %}
+                {% trans "Found by title" %}
+            {% endif %}
+        {% else %}
+            {% if is_unanswered %}
+                {% trans "Unanswered questions" %}
+            {% else %}
+                {% if page_title %}
+                    {% trans page_title %}
+                {% else %}
+                    {% trans "All Questions" %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {% comment %}  
+    <a class="feed-icon" style="background-image:url('{% media "media/images/feed-icon-small.png" %}');" href="{{ feed_url }}" title="{% trans "subscribe to question RSS feed" %}"></a>
+    {% endcomment %}
+	</div>
+
+    <div class="questions-count">
+    <table style="margin-bottom: .2em;">
+    <tr>
+    <td style="padding-bottom:6px; text-align: center;">{{ questions.paginator.count }}</td>
+    <td style="padding-bottom:6px;padding-left:5px"><span style="color:black;font-size:14px;">{{ list_description }}</span></td>    
+    </tr>
+
+
+    {% if answer_count %}
+    <tr>
+    <td style="text-align: center;">{{ answer_count }}</td>
+    <td><span style="color:black;font-size:14px;margin-left:5px">{% trans "answers" %}</span></td>
+    </tr>
+    {% endif %}
+    </table>
+    </div>
+
+    <div>
+        <p class="nomargin">
+            {{ questions.paginator.sort_description }}
+        </p>
+    </div>
+</div>
+{% endspaceless %}

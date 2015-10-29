@@ -1,0 +1,15 @@
+django==1.7.10
+html5lib
+south
+python-openid
+django-debug-toolbar
+psycopg2
+django-rosetta
+python-memcached
+Pillow
+sorl-thumbnail
+pylibmc
+uwsgi
+uwsgitop
+lxml
+oauth2client

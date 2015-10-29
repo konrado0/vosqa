@@ -1,0 +1,42 @@
+{% extends "base_content.html" %}
+{% load extra_tags %}
+{% block title %}About{% endblock %}
+{% block page_center %}
+<div id="about">
+<h1>What is	VOSQA?</h1>
+
+<h2>It is all about <b>questions</b> and <b>answers</b></h2>
+<ul>
+<li>Anyone in community can <b>vote</b> on answers and questions.</li>
+<li>Good answers <b>bubble up</b> and are visible first, no need to scroll down to find them.</li>
+<li>Just questions and answers, zero off topic. If you need to clarify something use <b>comments</b>.</li>
+</ul>
+<div style="clear:both"></div>
+
+<h2><b>Tags</b> and <b>images</b> help you find interesting questions</h2>
+<ul>
+<li>Author can specify up to 5 tags categorizing questions subject eg. <span class="tag">#vosqa</span> or
+<span class="tag">#opensource</span>.</li>
+<li>Clicking on a tag lets you see all the questions tagged with it.</li>
+<li>Each question has image associated with it.</li> 
+<li>Quickly find interesting questions by browsing them with our convenient views.</li>
+</ul>
+<div style="clear:both"></div>
+
+<h2>For your activity you earn <b>reputation</b> and unlock <b>badges</b></h2>
+<ul style="width:550px">
+<li>Reputation is awarded when people vote on your posts.</li>
+<li>With higher reputation you get more privileges, like ability to vote down posts and comment on them.</li>
+<li>As you actively participate in community you gain badges. From easy to get bronze ones to gold symbolizing substantial commitment.</li>
+</ul>
+<div style="clear:both"></div>
+
+<p style="margin-top:30px">QA sites only works when users like you contribute generously advising on other’s problems.<br />
+Don’t hesitate and:</p>
+<ul>
+<li><a href="{% url "index" %}" class="special">Find interesting questions</a></li>
+<li><a href="{% url "ask" %}" class="special">Ask a question</a></li>
+</ul>
+<p>Need more help? Check out our <a href="{% url "faq" %}">FAQ</a> page.</p>
+</div>
+{% endblock%}

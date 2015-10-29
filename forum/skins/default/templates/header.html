@@ -1,0 +1,67 @@
+<!-- template header.html -->
+{% load extra_tags ui_registry i18n extra_filters %}
+
+	<div id="roof">
+		<div id="navbackground">
+		<div class="navcontent">
+			<div id="logo"><a href="{% url "index" %}">
+			<img src="{% media  "/media/images/logo.png" %}" title="{% trans "back to home page" %}" alt="{{settings.APP_TITLE}} home" width="186" height="22"/>
+			</a></div>
+		  
+			<div id="top">		    
+				<div id="searchBar">
+			    <form action="{% url "search" %}" method="get">
+			        {% csrf_token %}	            
+		            <select name="t">
+					<option value="question" selected>{% trans "Questions:" %}</option>
+					<option value="tag">{% trans "Tags:" %}</option>
+					<option value="user">{% trans "Users:" %}</option>					
+					</select>
+					<input type="text" class="searchInput" value="{{ keywords }}" name="q" id="keywords" />
+		            <input type="submit" name="Submit" value="{% trans "Search" %}" class="searchBtn" />        
+			        
+			    </form>	
+				</div>
+				<div id="toplinks">
+				{% comment %}{% loadregistry header_links %}{% endloadregistry %}{% endcomment %}
+				{% if user.is_authenticated %}
+					{% if user.is_superuser %}
+					<a href="{% url "admin_index" %}">{% trans "Administration" %}</a>
+					{% endif %}
+					<a href="{{ user.get_profile_url }}" >{{ user.username }}</a>{% get_score_badge user %} 
+					<a href="{% url "logout" %}">{% trans "Sign Out" %}</a>
+				{% else %}
+					<a href="{% url "auth_local_register" %}">{% trans "Register" %}</a>
+					<a href="{% url "auth_signin" %}">{% trans "Sign in" %}</a>
+				{% endif %}
+				</div> 
+			</div>
+		</div>
+		</div>
+
+    <div id="navlinks">
+    <div class="navcontent">
+    <div id="nav">
+        {% loopregistry page_top_tabs %}{% spaceless %}
+            <a id="nav_{{ tab_name }}"{% ifequal tab tab_name %} class="on"{% endifequal %} href="{{ tab_url }}" >{{ tab_title }}</a>
+        {% endspaceless %}{% endloopregistry %}
+        <a id="nav_ask" href="{% url "ask" %}" class="special">{% trans "ask question" %}</a>
+        <div style="float:right;margin-right:28px;">
+		{% if settings.FACEBOOK_FANPAGE %}<a class="social" href="{{ settings.FACEBOOK_FANPAGE }}"><span class='symbol'>facebook</span></a>{% endif %}
+		{% if settings.TWITTER_ADDRESS %}<a class="social" href="{{ settings.TWITTER_ADDRESS }}"><span class='symbol'>twitterbird</span></a>{% endif %}
+		{% if settings.GOOGLE_PLUS_FANPAGE %}<a class="social" href="{{ settings.GOOGLE_PLUS_FANPAGE }}"><span class='symbol'>googleplus</span></a>{% endif %}
+		</div>
+    </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="clear"></div>
+  
+	{% if settings.USE_ANNOUNCEMENT_BAR|or_preview:request %}
+  <div id="announcement">
+      {{ settings.ANNOUNCEMENT_BAR|or_preview:request|static_content:settings.ANNOUNCEMENT_BAR_RENDER_MODE }}
+  </div>
+  {% endif %}
+
+<!-- end template header.html -->

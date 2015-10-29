@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+<!-- flow.html -->
+{% load extra_tags %}
+{% load general_sidebar_tags %}
+{% load question_list_tags %}
+{% load i18n %}
+{% block fulltitle %}{{ settings.APP_TITLE }}{% endblock %}
+{% block title %}{% spaceless %}{{ page_title }}{% endspaceless %}{% endblock %}
+
+{% block metadescription %}{% spaceless %}
+    {% if tag %}
+        {% blocktrans with settings.APP_TITLE as app_title %}Questions and answers about {{ tag }} on {{ app_title }}{% endblocktrans %}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+
+{% block meta %}
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ feed_url }}" />
+{% endblock %}
+
+{% block forejs %}
+{% if settings.LOAD_RESOURCES_FROM_CDN %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.2/masonry.pkgd.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js"></script>
+{% else %}
+<script src="{% media  "/media/js/masonry.pkgd.min.js" %}" type="text/javascript"></script>
+<script src="{% media  "/media/js/jquery.imagesloaded.min.js" %}" type="text/javascript"></script>
+{% endif %}
+<script type="text/javascript">
+(function(namespace) { // Closure to protect local variable "var hash"
+    if ('replaceState' in history) { // Yay, supported!
+        namespace.replaceHash = function(newhash) {
+            if (newhash && (''+newhash).charAt(0) !== '#') newhash = '#' + newhash;
+            history.replaceState('', '', newhash);
+        }
+    } else {
+        var hash = location.hash;
+        namespace.replaceHash = function(newhash) {
+            if (location.hash !== hash) history.back();
+            location.hash = newhash;
+        };
+    }
+})(window);
+
+var InfiniScroll = {
+	current_page : 1,
+	last_page : 1,
+	url_template : "",
+	ajax_running : false,
+	delay: 1000,
+	attempts: 3,
+		
+	EndsWith: function(str, suffix) {
+ 	   return str.indexOf(suffix, str.length - suffix.length) !== -1;
+	},
+	
+	Reset: function(){
+		this.delay = 500;
+		this.attempts = 3;
+		this.ajax_running = false;
+	},
+	
+	Load: function(){
+		_infini = this;
+		$.ajax({
+			dataType: "html",
+			timeout: 20000,
+			url: _infini.url_template + (_infini.current_page +1).toString() + "&list_template={{ questions.paginator.list_template }}",				
+			success: function( data ) {
+				$("#spinner").empty();
+				_infini.current_page++;
+				_infini.Reset();
+				var sub_page_id = String(_infini.current_page);
+				var $container = $("#listA");
+				$container.append("<a id=\"" + sub_page_id + "\"></a>");
+				var wrapped = $(data);
+				wrapped.css({ opacity: 0 });
+				$container.append(wrapped).imagesLoaded(function(){
+					$container.masonry('appended', wrapped, true);
+					wrapped.animate({ opacity: 1 });
+				});
+				// document.location.hash = String(sub_page_id);
+				window.replaceHash(String(sub_page_id));
+			},
+			error: function(xhr, status) {
+				$("#spinner").empty();
+				if( _infini.attempts-- == 0){
+					$("#spinner").append('<input type="button" value="{% trans "Error happened :(, click to reload page"%}" class="spinner">')
+						.click(function() {location.reload(true);} );
+					_infini.Reset();
+					return;
+				}
+				setTimeout(function() {
+					_infini.Load();
+				}, _infini.delay*=2);
+			}
+		});
+		_infini.ajax_running = true;
+		$("#spinner").append("<img src=\"{% media "/media/images/ajax-loader.gif" %}\" class=\"spinner\">");
+	},
+	
+	Preload: function(){
+		_infini = this;
+		
+		if(_infini.current_page == this.landing_hash){
+			window.replaceHash(String(_infini.current_page));
+			// Fix for chrome bug that does not apply scroll immediately
+			window.scrollY += 1;			
+			$(window).scroll(function () { 
+				if ($(window).scrollTop() < $(document).height() - $(window).height() - 80) return;
+				if(_infini.ajax_running || _infini.current_page >= _infini.last_page) return;
+				_infini.Load();
+			});						
+			return;
+		}
+		
+		$.ajax({
+			dataType: "html",
+			timeout: 20000,
+			url: _infini.url_template + (_infini.current_page +1).toString() + "&list_template={{ questions.paginator.list_template }}",
+			success: function( data ) {
+				$("#spinner").empty();
+				_infini.current_page++;
+				_infini.Reset();
+				var sub_page_id = String(_infini.current_page);
+				var $container = $("#listA");
+				$container.append("<a id=\"" + sub_page_id + "\"></a>")
+				var wrapped = $(data);
+				wrapped.css({ opacity: 0 });
+				$container.append(wrapped).imagesLoaded(function(){
+					$container.masonry('appended', wrapped, true);
+					wrapped.animate({ opacity: 1 });
+				});
+				_infini.Preload();
+			},
+			error: function(xhr, status) {
+				$("#spinner").empty();
+				if( _infini.attempts-- == 0){
+					$("#spinner").append('<input type="button" value="{% trans "Error happened :(, click to reload page"%}" class="spinner">')
+						.click(function() {location.reload(true);} );
+					_infini.Reset();
+					return;
+				}
+				setTimeout(function() {
+					_infini.Preload();
+				}, _infini.delay*=2);
+			}
+		});
+		_infini.ajax_running = true;
+		$("#spinner").append("<img src=\"{% media "/media/images/ajax-loader.gif" %}\" class=\"spinner\">");
+	},	
+	
+	Init: function(){		
+		var lasta = $(".pager .page").last();
+		$("#PagePagination").hide();
+		var max_page_text = lasta.text();
+		if(!max_page_text) return;
+		var urlt = lasta.attr("href");
+		if(!this.EndsWith(urlt, max_page_text)){
+			console.error("Dupa, identyfikator strony w złym miejscu");
+			return;
+		}
+		this.url_template = "/raw" + urlt.substr(0, urlt.length - max_page_text.length);	
+		this.last_page = parseInt(max_page_text);		
+		this.current_page = parseInt($("#PagePagination .curr.this_page").text());		
+		
+		if(!this.url_template || !this.last_page || !this.current_page) return;
+		
+		// We are back from some page preload up to previously opened content
+		if(document.location.hash){
+			this.landing_hash = parseInt(document.location.hash.substr(1));
+			if(this.landing_hash && this.last_page >= this.landing_hash){
+				window.replaceHash(null);
+				this.Preload();
+				return;
+			} else window.replaceHash(null);
+		}
+		_infini = this;
+		$(window).scroll(function () { 
+			if ($(window).scrollTop() <= $(document).height() - $(window).height() - {{ settings.NEXT_PAGE_LOAD_TRIGGER }}) return;
+			if(_infini.ajax_running || _infini.current_page >= _infini.last_page) return;
+			_infini.Load();
+		});
+	}
+};
+
+$(document).ready(function() {	
+	{% ifequal questions.paginator.list_template 'kafelki.html' %}
+	//Trick to enable styling when masonry is not used
+	$( "<style>.kafel {margin: 0 0 30px 0;}</style>" ).appendTo( "head" )
+	var $container = $('#listA');
+	$container.masonry({itemSelector: '.kafel', 'gutter': 25});	
+	$container.imagesLoaded(function () {
+       $container.masonry();                     
+   	});
+	{% endifequal %}
+	InfiniScroll.Init();
+	
+	$('#bottomSlide').hide();
+	$('#footer_actuator').click(function(event) {
+        event.preventDefault();
+		$('#bottomSlide').slideToggle("fast");
+	});
+	$('#closeFooter').click(function() {
+		$('#bottomSlide').slideToggle("fast");
+	});	
+});
+</script>
+{% endblock %}
+
+{% block site_width_banner %}
+{% if not request.user.is_authenticated %}{% if not request.COOKIES.hideWelcome %}
+{% include "welcome_box.html" %}
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="tabBar">   
+    {{ questions.paginator.template_tabs }}
+    {{ questions.paginator.sort_tabs }}
+</div>
+<div id="listA">
+{% include questions.paginator.list_template %}
+</div>
+<div id="spinner">
+</div>
+{% endblock %}
+
+{% block tail %}
+<div id="PagePagination">
+    <div class="pager">{{ questions.paginator.page_numbers }}</div>
+    <div class="pagesize">{{ questions.paginator.page_sizes }}</div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{% include "question_list/count.html" %}
+{% comment %}  {% sidebar_upper %} {% endcomment %}
+{% if request.user.is_authenticated %}
+    {% tag_selector %}
+{% endif %}
+{% comment %}  {% sidebar_lower %}{% endcomment %}
+{% recent_tags %}
+{% recent_awards %}
+{% endblock %}
+{% block footer %}
+<a href="#" id="top_actuator" _uid="238" class="flowtop">{% trans "Back to top" %}</a>
+<a href="{% url "about" %}" id="footer_actuator" _uid="237">{% trans "About" %}</a>
+<div id="bottomSlide">
+<div id="ground">
+	<div id="closeFooter">×</div>
+	{% include "footer.html" %}	
+</div>
+</div>
+{% endblock %}

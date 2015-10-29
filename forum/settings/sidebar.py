@@ -1,0 +1,103 @@
+from base import Setting, SettingSet
+from django.forms.widgets import Textarea, Select
+from django.utils.translation import ugettext_lazy as _
+
+from static import RENDER_CHOICES
+
+SIDEBAR_SET = SettingSet('sidebar', 'Sidebar content', "Enter contents to display in the sidebar. You can use basic html tags.", 10, True)
+
+SHOW_WELCOME_BOX = Setting('SHOW_WELCOME_BOX', True, SIDEBAR_SET, dict(
+label = _("Show the Welcome box"),
+help_text = _("Do you want to show the welcome box when a user first visits your site."),
+required=False))
+
+SHOW_INTERESTING_TAGS_BOX = Setting('SHOW_INTERESTING_TAGS_BOX', True, SIDEBAR_SET, dict(
+label = _("Show interesting tags in the sidebar"),
+help_text = _("Check this if you want to see the interesting tags container in the sidebar."),
+required=False))
+
+APP_INTRO = Setting('APP_INTRO', u'<p>Ask and answer questions, make the world better!</p>', SIDEBAR_SET, dict(
+label = _("Application intro"),
+help_text = _("The introductory page that is visible in the sidebar for anonymous users."),
+widget=Textarea))
+
+QUESTION_TITLE_TIPS = Setting('QUESTION_TITLE_TIPS',
+u"""
+<ul>
+ <li>ask a question relevant to the |APP_TITLE| community</li>
+ <li>the title must be in the form of a question</li>
+ <li>provide enough details</li>
+ <li>be clear and concise</li>
+ </ul>
+"""
+, SIDEBAR_SET, dict(
+label = "Question title tips (not used)",
+help_text = "Tips visible on the ask or edit questions page about the question title.",
+required=False,
+widget=Textarea(attrs={'rows': '10'})))
+
+QUESTION_TAG_TIPS = Setting('QUESTION_TAG_TIPS',
+u"""
+ <ul>
+ <li>Tags are words that will tell others what this question is about.</li>
+ <li>They will help other find your question.</li>
+ <li>A question can have up to |FORM_MAX_NUMBER_OF_TAGS| tags, but it must have at least |FORM_MIN_NUMBER_OF_TAGS|.</li>
+ <li>Order of tags is importand, put tags that describe your question best first.
+ </ul>
+"""
+, SIDEBAR_SET, dict(
+label = "Tagging tips (not used)",
+help_text = "Tips visible on the ask or edit questions page about good tagging.",
+required=False,
+widget=Textarea(attrs={'rows': '10'})))
+
+
+SIDEBAR_UPPER_SHOW = Setting('SIDEBAR_UPPER_SHOW', True, SIDEBAR_SET, dict(
+label = "Show Upper Block",
+help_text = "Check if your pages should display the upper sidebar block.",
+required=False))
+
+SIDEBAR_UPPER_DONT_WRAP = Setting('SIDEBAR_UPPER_DONT_WRAP', False, SIDEBAR_SET, dict(
+label = "Don't Wrap Upper Block",
+help_text = "Don't wrap upper block with the standard style.",
+required=False))
+
+SIDEBAR_UPPER_TEXT = Setting('SIDEBAR_UPPER_TEXT',
+u"""
+This is a place for Your advertisment
+""", SIDEBAR_SET, dict(
+label = "Upper Block Content",
+help_text = " The upper sidebar block. ",
+widget=Textarea(attrs={'rows': '10'})))
+
+SIDEBAR_UPPER_RENDER_MODE = Setting('SIDEBAR_UPPER_RENDER_MODE', 'html', SIDEBAR_SET, dict(
+label = _("Upper block rendering mode"),
+help_text = _("How to render your upper block code."),
+widget=Select(choices=RENDER_CHOICES),
+required=False))
+
+
+SIDEBAR_LOWER_SHOW = Setting('SIDEBAR_LOWER_SHOW', True, SIDEBAR_SET, dict(
+label = "Show Lower Block",
+help_text = "Check if your pages should display the lower sidebar block.",
+required=False))
+
+SIDEBAR_LOWER_DONT_WRAP = Setting('SIDEBAR_LOWER_DONT_WRAP', False, SIDEBAR_SET, dict(
+label = "Don't Wrap Lower Block",
+help_text = "Don't wrap lower block with the standard style.",
+required=False))
+
+SIDEBAR_LOWER_TEXT = Setting('SIDEBAR_LOWER_TEXT',
+u"""
+Learn more about OSQA<br>
+Type in some urls
+""", SIDEBAR_SET, dict(
+label = "Lower Block Content",
+help_text = " The lower sidebar block. ",
+widget=Textarea(attrs={'rows': '10'})))
+
+SIDEBAR_LOWER_RENDER_MODE = Setting('SIDEBAR_LOWER_RENDER_MODE', 'html', SIDEBAR_SET, dict(
+label = _("Lower block rendering mode"),
+help_text = _("How to render your lower block code."),
+widget=Select(choices=RENDER_CHOICES),
+required=False))

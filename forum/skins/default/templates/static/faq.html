@@ -1,0 +1,57 @@
+{% extends "base_content.html" %}
+{% load extra_tags %}
+{% block title %}FAQ{% endblock %}
+{% block page_center %}
+<div id="faq">
+<h1>Frequently Asked Questions (FAQ)</h1>
+
+<h3>How is a Question/Answer community different from a typical forum?</h3>
+<p>A Question/Answer community is different from a typical forum because it focuses on finding answers to the questions of its members.
+On a typical forum, by contrast, discussion flows freely, rarely stays on topic and it is much harder to spot valuable answers.</p>
+<p>By keeping a laser focus on questions and answers, this community ensures that finding answers to existing questions - and getting answers to new questions - 
+can be done without any distractions.</p>
+
+<h3>What kinds of questions can I ask here?</h3>
+<p>Most importantly - questions should be relevant to {{settings.APP_TITLE}} community. Before you ask, please make sure to search for a similar question.
+You can search for questions by their title, content, or tags.</p>
+
+<h3>What kinds of questions should be avoided?</h3>
+<p>Please avoid purely argumentative questions.</p>
+
+<h3>What should I avoid in my answers?</h3>
+<p>{{settings.APP_TITLE}} is a question and answer site - it is not a discussion group. Please avoid holding debates in your answers as they tend to dilute the essense. 
+For brief discussions please use comments.</p>
+
+<h3>Who moderates this community?</h3>
+<p>The short answer is: you. This website is moderated by the users. The community features a reputation system that allows users to earn rights to perform a variety of moderation tasks.</p>
+
+<h3>How does the reputation system work?</h3>
+<p>When a question or answer is upvoted, the user who posted it will be awarded "reputation points". 
+These points serve as a rough measure of the community trust in this user. Various moderation tasks are gradually assigned to the users based reputation points.</p>
+<p>For example, if you ask an interesting question or give a helpful answer, your input will be upvoted. On the other hand if the answer is misleading, 
+it will be downvoted. Each vote in favor will generate {{ settings.REP_GAIN_BY_UPVOTED }} points, 
+each vote against will subtract {{ settings.REP_LOST_BY_DOWNVOTED }} points. 
+There is a limit of 200 points that can be accumulated per question or answer. The table below explains reputation requirements for each type of moderation task.</p>
+<table>
+<tr><td>Add comments</td><td>{{ settings.REP_TO_COMMENT }}</td></tr>
+<tr><td>Delete comments</td><td>{{ settings.REP_TO_DELETE_COMMENTS }}</td></tr>
+<tr><td>Close own questions</td><td>{{ settings.REP_TO_CLOSE_OWN }}</td></tr>
+<tr><td>Reopen own questions</td><td>{{ settings.REP_TO_REOPEN_OWN }}</td></tr>
+<tr><td>Retag questions</td><td>{{ settings.REP_TO_RETAG }}</td></tr>
+<tr><td>Edit any answer</td><td>{{ settings.REP_TO_EDIT_OTHERS }}</td></tr>
+<tr><td>Open any closed question</td><td>{{ settings.REP_TO_CLOSE_OTHERS }}</td></tr>
+<tr><td>Delete any comment</td><td>{{ settings.REP_TO_DELETE_COMMENTS }}</td></tr>
+</table>
+
+<h3>What is a gravatar?</h3>
+<p>Gravatar means globally recognized avatar - your unique avatar image associated with your email address. 
+It's simply a picture that shows next to your posts on the websites that support gravatar protocol. 
+The default gravatar appears as a square filled with a snowflake-like figure. 
+You can set your image at gravatar.com or simply set your avatar in user settings.</p>
+
+<h3>Why can other people can edit my questions/answers?</h3>
+<p>Allowing experienced members of this community to curate the questions and answers improves the overall quality of the knowledge base content.</p>
+
+<p style="margin-top:15px">Still got questions? Don't hesitate to <a href="{% url "feedback" %}">ask us</a>.</p>
+</div>
+{% endblock %}

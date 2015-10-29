@@ -1,0 +1,14 @@
+{% extends "user.html" %}
+
+{% load extra_tags i18n %}
+{% block usercontent %}
+<div class="user-stats-table">
+{% if badges %}
+	{% for badge, count in badges %}
+    <div class="user-badge-display">{% show_badge badge count %}</div>
+    {% endfor %}
+{% else %}
+    {% trans "No badges earned by this user." %}
+{% endif %}
+</div>
+{% endblock %}

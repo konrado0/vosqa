@@ -1,0 +1,148 @@
+{% extends "base_content.html" %}
+
+{% load i18n %}
+{% load extra_tags %}
+
+{% block title %}{% trans "Join" %} {{settings.APP_TITLE}}{% endblock %}
+
+{% block forejs %}    
+    {% for provider in all_providers %}
+        {% for location in provider.extra_css %}
+            <link rel="stylesheet" type="text/css" media="screen" href="{{ location }}"/>
+        {% endfor %}
+    {% endfor %}
+<script type='text/javascript' src='//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js'></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    	$(".jspot").remove();
+    	$("#fregister").validate({ rules: {    		
+    		{{ form1.username.html_name }}: { required: true, minlength: {{ settings.MIN_USERNAME_LENGTH }}}, 
+    		{{ form1.email.html_name }}: { required: true, email: true},
+    		'age': { required: false, },
+    		{% if form1.real_name %}{{ form1.real_name.html_name }}: { required: false, },{% endif %}
+    		{% if form1.password1 %}
+    		{{ form1.password1.html_name }}: { required: true, minlength: {{ settings.MIN_PASSWORD_LENGTH }}},
+    		{{ form1.password2.html_name }}: { equalTo: "#id_{{ form1.password1.html_name }}", }    		
+    		{% endif %}
+    		},   invalidHandler: function(event, validator) {
+			    // 'this' refers to the form
+			    var errors = validator.numberOfInvalids();
+			    if (errors) {
+			      var message = errors == 1
+			        ? 'You missed 1 field. It has been highlighted'
+			        : 'You missed ' + errors + ' fields. They have been highlighted';
+			      $("div.error span").html(message);
+			      $("div.error").show();
+			    } else {
+			      $("div.error").hide();
+			    }
+  			} });		
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="authBox">
+    {% for provider in all_providers %}
+        {% if provider.pre_code %}
+            {{ provider.pre_code|safe }}
+        {% endif %}
+    {% endfor %}
+    <h1>{% trans "Join" %} {{settings.APP_TITLE}}</h1>    
+    {% if msg %}
+        <p class="error">{{ msg }}</p>
+    {% endif %}
+    
+    <p class="grey">Connect with a social network</p>
+    {% for provider in bigicon_providers %}
+    {{ provider.render_button }}
+    {% endfor %}
+    
+    <div style="clear: both; margin-bottom: 5px;"></div>
+    <h2 class="or_label">{% trans 'Or...' %}</h2>
+    {% if form1.errors %}
+        <ul class="errorlist">
+        {% if form1.non_field_errors %}
+            {% for error in form1.non_field_errors %}
+                <li>{{error}}</li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+	{% endif %}
+
+	<div class="login">
+    <form id="fregister" name="fregister" class="signin_form" action="" method="POST">
+	<fieldset id='local_login_fs'>
+  	<p><span class='big strong'>{% trans 'Sign up with Your email:' %}</span><br/><span class='grey'>
+  ({% trans 'Remember to validate your email after registration' %})</span></p>
+        <div class="error"><span></span></div>
+            {% csrf_token %}
+            {{ form1.next }}
+            <div class="form-row-vertical margin-bottom">
+                <label for="id_username">{% trans "Username:" %}</label>
+                {% if form1.username.errors %} 
+                    <p class="error">{{ form1.username.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.username }}
+            </div>
+            <div class="form-row-vertical margin-bottom jspot">
+                <label for="id_birthday">Simple test, skip this:</label>                
+                <input class="required login" id="id_birthday" maxlength="50" name="birthday" type="text">
+            </div>
+            <div class="form-row-vertical margin-bottom csspot">
+                <label for="id_age">Age:</label>                
+                <input class="required login" id="id_age" maxlength="30" name="age" type="text">
+            </div>
+            <div class="form-row-vertical margin-bottom">
+                <label for="id_email">{% trans "Your email address:" %}</label>
+                {% if form1.email.errors %} 
+                    <p class="error">{{ form1.email.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.email }}
+            </div>
+            <div class="form-row-vertical margin-bottom jspot">
+                <label for="id_url">Dont enter anything:</label>                
+                <input class="required login" id="id_website" maxlength="50" name="website" type="text">
+            </div>
+            {% if form1.real_name %}
+            <div class="form-row-vertical margin-bottom" style="display: none;">
+                <label for="id_real_name">{{ form1.real_name.label }}</label>
+                {% if form1.real_name.errors %}
+                    <p class="error">{{ form1.real_name.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.real_name }}
+            </div>
+            {% endif %}
+            {% if form1.password1 %}
+                <div class="form-row-vertical margin-bottom">
+                    <label for="password1_id">{% trans "Password (at least "%}{{ settings.MIN_PASSWORD_LENGTH }}{% trans " characters long):" %}</label>
+                    {% if form1.password1.errors %}
+                        <p class="error">{{ form1.password1.errors|join:", " }}</p>
+                    {% endif %}
+                    {{ form1.password1 }}
+                </div>
+                <div class="form-row-vertical margin-bottom">
+                    <label for="password2_id">{% trans "Retype password:" %}</label>
+                    {% if form1.password2.errors %} 
+                        <p class="error">{{ form1.password2.errors|join:", " }}</p>
+                    {% endif %}
+                    {{ form1.password2 }}
+                </div>
+            {% endif %}
+            {% if form1.recaptcha %}
+                <div class="form-row-vertical margin-bottom">
+                <label for="recaptcha_id">{% trans "Are you a human?" %}</label>
+                {% if form1.recaptcha.errors %} 
+                    <p class="error">{{ form1.recaptcha.errors|join:", " }}</p>
+                {% endif %}
+                {{ form1.recaptcha }}
+                </div>
+            {% endif %}
+            <div class="submit-row"><input type="submit" class="submit" name="bnewaccount" id="bnewaccount" value="{% trans "Create account" %}"/></div>
+            <div><p style="margin:10px 0 0 0">By registering, you agree to the <a href="{% url "privacy" %}">privacy policy</a> and 
+            <a href="{% url "terms" %}">terms of use</a>.</p></div>
+	</fieldset>
+	</form>
+	</div>
+</div>
+{% endblock %}

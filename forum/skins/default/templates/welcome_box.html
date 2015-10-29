@@ -1,0 +1,38 @@
+{% load extra_tags i18n %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	if($.cookie('hideWelcome')) $('#welcomeBox').hide();
+	else $('#closeWelcome').click(function() {
+		$('#welcomeBox').slideToggle("fast");
+		$.cookie('hideWelcome', '1');
+	});
+});
+</script>
+
+<div id="welcomeBox">
+    <div id="welcomeMessage">
+      <p style="margin-bottom: 7px"><span style="font-size: 1.1em;font-weight: bold">VOSQA</span> is community-driven question and answer site.
+      <p>Get advice, find tips and inspiration, share your knowledge and ideas with others.</p>
+      <br />
+      <a href="{% url "auth_local_register" %}" class="WelcomeUrl">{% trans "Join now!" %}</a>      
+    </div>
+    <div id="welcomeGuide" style="margin-top: -14px">
+    	<div class="welcomeFeature">
+    	<img src="{% media "/media/images/welcome/question.png" %}" width="115" height="115" />
+    	<p>{% trans "Anyone can ask a question" %}</p>
+    	</div>
+    	<div class="welcomeFeature">
+    	<img src="{% media "/media/images/welcome/community.png" %}" width="115" height="115" />
+    	<p>{% trans "Thanks to collective community wisdom best answers rise to the top" %}</p>
+    	</div>
+    	<div class="welcomeFeature">
+    	<img src="{% media "/media/images/welcome/best.png" %}" width="115" height="115" />
+    	<p>{% trans "Contributors get recognized with reputation and badges" %}<br />
+    	<a href="{% url "about" %}">Take a quick tour!</a></p></p>
+    	</div>
+    </div>
+    <div id="closeWelcome">×</div>
+    <div style="clear: both"></div>
+</div>

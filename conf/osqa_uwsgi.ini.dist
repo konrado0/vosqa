@@ -1,0 +1,29 @@
+# osqa_uwsgi.ini file
+[uwsgi]
+
+# Django-related settings
+# the base directory (full path)
+chdir           = <FULL_PATH_TO_PROJECT>/dressbook
+# Django's wsgi file
+module          = osqa.conf.wsgi:application
+# the virtualenv (full path)
+home            = /home/<USER>/virtualenv/osqa
+
+# process-related settings
+# master
+master          = true
+pidfile		= /tmp/osqa-master.pid
+# maximum number of worker processes
+processes       = 2
+max-requests    = 5000
+# the socket (use the full path to be safe
+socket          =  /tmp/osqa.sock
+
+#uid		= www-data
+#gid		= www-data
+# ... with appropriate permissions - may be needed
+chmod-socket    = 660
+# clear environment on exit
+vacuum          = true
+harakiri	= 20
+#daemonize	= <FULL_PATH_TO_PROJECT>/dressbook/osqa/log/uwsgi_osqa.log

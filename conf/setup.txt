@@ -1,0 +1,12 @@
+#/bin/sh
+sudo usermod -aG www-data konrad
+sudo usermod -aG konrad www-data
+sudo rm /etc/nginx/sites-enabled/default
+sudo ln -s ~/Programming/dressbook/osqa/conf/production/osqa_nginx.conf /etc/nginx/sites-enabled/
+sudo cp production/uwsgi.conf.dist /etc/supervisor/conf.d/uwsgi.conf
+ln -s production/osqa_uwsgi.ini osqa_uwsgi.ini
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo service supervisor restart
+sudo service nginx restart
+
